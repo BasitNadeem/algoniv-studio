@@ -25,7 +25,7 @@ export default function WhyUs() {
           </div>
           <div className="mt-2 flex gap-3 md:gap-6 text-[10px] md:text-xs font-mono tracking-[0.4em] text-muted-foreground">
             {["A","L","G","O","N","I","V"].map((l) => (
-              <span key={l} className={l === "I" ? "text-red-accent" : ""}>{l}</span>
+              <span key={l} className={l === "I" || l === "A" ? "text-red-accent" : ""}>{l}</span>
             ))}
           </div>
         </div>
