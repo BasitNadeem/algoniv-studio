@@ -13,7 +13,7 @@ const services: Service[] = [
     icon: Brain,
     title: "AI & ML Solutions",
     desc: "Production model pipelines, RAG systems, and agentic workflows engineered to actually run when the demo ends.",
-    tags: ["SOTA", "RAG", "AGENTS"],
+    tags: ["SOTA", "EVALUATED"],
   },
   {
     icon: Code2,
@@ -24,7 +24,7 @@ const services: Service[] = [
   {
     icon: Database,
     title: "Data Engineering & Analytics",
-    desc: "Warehouses, lakehouses, and the pipelines that hold them up. From event streams to executive dashboards — auditable.",
+    desc: "Warehouses, lakehouses, and the dbt graphs that hold them up. From event streams to executive dashboards — auditable.",
     tags: ["SNOWFLAKE", "DUCKDB", "DBT"],
   },
   {
@@ -44,39 +44,44 @@ export default function Capabilities() {
         </div>
         <h2 className="reveal mt-4 font-display font-extrabold text-4xl md:text-6xl leading-[1.05] tracking-tight">
           Four disciplines.<br />
-          One opinionated team.
+          One <span className="text-red-accent">opinionated</span> team.
         </h2>
         <p className="reveal mt-6 max-w-2xl text-muted-foreground text-lg">
           We don't pretend to do everything. We do these four things at the level of a senior in-house team — and we ship.
         </p>
 
-        <div className="mt-14 border-t border-border">
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((s, i) => (
             <div
               key={s.title}
-              className={`service-card reveal grid grid-cols-12 items-center gap-6 border-b border-border px-2 md:px-6 py-8 md:py-10 ${i === 0 ? "active" : ""}`}
+              className="capability-card reveal group relative rounded-2xl border border-border bg-surface p-8 md:p-10 min-h-[320px] flex flex-col"
               data-delay={`${i * 80}`}
             >
-              <div className="col-span-12 md:col-span-1 flex">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-2 border border-border">
-                  <s.icon className="h-5 w-5 text-red-accent" />
-                </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-2 border border-border transition-colors group-hover:border-red-accent">
+                <s.icon className="h-5 w-5 text-red-accent" />
               </div>
-              <div className="col-span-12 md:col-span-8">
-                <h3 className="font-display font-bold text-xl md:text-2xl text-foreground">{s.title}</h3>
-                <p className="mt-2 text-muted-foreground max-w-2xl">{s.desc}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {s.tags.map((t) => (
-                    <span key={t} className="text-[10px] font-mono tracking-[0.18em] text-muted-foreground border border-border px-2 py-1 rounded">
-                      {t}
-                    </span>
-                  ))}
+
+              <div className="mt-auto pt-10">
+                <h3 className="font-display font-bold text-2xl md:text-[28px] text-foreground tracking-tight">
+                  {s.title}
+                </h3>
+                <p className="mt-3 text-muted-foreground leading-relaxed max-w-md">
+                  {s.desc}
+                </p>
+
+                <div className="mt-8 flex items-center justify-between">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-mono tracking-[0.2em] text-subtle uppercase">
+                    {s.tags.map((t, idx) => (
+                      <span key={t} className="flex items-center gap-2">
+                        {idx > 0 && <span>·</span>}
+                        <span>{t}</span>
+                      </span>
+                    ))}
+                  </div>
+                  <a href="#contact" className="text-[11px] font-mono tracking-[0.2em] uppercase text-red-accent opacity-80 group-hover:opacity-100 transition-opacity">
+                    Explore →
+                  </a>
                 </div>
-              </div>
-              <div className="col-span-12 md:col-span-3 md:text-right">
-                <a href="#contact" className="text-[11px] font-mono tracking-[0.2em] uppercase text-red-accent hover:text-red-ui transition-colors">
-                  Explore →
-                </a>
               </div>
             </div>
           ))}

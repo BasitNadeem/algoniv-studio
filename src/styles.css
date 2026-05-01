@@ -164,35 +164,31 @@
   transform: translateX(0);
 }
 
-/* Service card hover */
-.service-card {
-  position: relative;
-  transition: background-color 0.3s ease;
+/* Capability card — rounded with red glow on hover */
+.capability-card {
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease, background-color 0.35s ease;
 }
-.service-card::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 0;
-  background-color: var(--red-accent);
-  transition: width 0.3s ease;
+.capability-card:hover {
+  border-color: var(--red-accent);
+  background-color: #13131C;
+  box-shadow:
+    0 0 0 1px rgba(232, 25, 44, 0.35),
+    0 0 40px -4px rgba(232, 25, 44, 0.45),
+    0 0 90px -10px rgba(232, 25, 44, 0.35);
+  transform: translateY(-2px);
 }
-.service-card::after {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; bottom: 0; width: 200px;
-  background: linear-gradient(to right, rgba(232, 25, 44, 0.08), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+
+/* Process step — circular node with red glow on hover */
+.process-step:hover .process-node {
+  border-color: var(--red-accent);
+  box-shadow:
+    0 0 0 1px rgba(232, 25, 44, 0.4),
+    0 0 30px rgba(232, 25, 44, 0.55),
+    inset 0 0 20px rgba(232, 25, 44, 0.15);
+  transform: translateY(-1px);
 }
-.service-card:hover::before,
-.service-card.active::before {
-  width: 2px;
-}
-.service-card:hover::after,
-.service-card.active::after {
-  opacity: 1;
+.process-step .process-node {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 /* CTA hover */
