@@ -21,7 +21,7 @@ export default function WhyUs() {
 
         <div className="reveal mt-12 select-none">
           <div className="font-display font-extrabold text-[18vw] md:text-[10rem] leading-none text-subtle/60 tracking-tight">
-            algon<span className="text-red-accent/80">i</span>v
+            <span className="text-red-accent/80">a</span>lgon<span className="text-red-accent/80">i</span>v
           </div>
           <div className="mt-2 flex gap-3 md:gap-6 text-[10px] md:text-xs font-mono tracking-[0.4em] text-muted-foreground">
             {["A","L","G","O","N","I","V"].map((l) => (
