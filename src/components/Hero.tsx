@@ -10,8 +10,8 @@ export default function Hero() {
           </div>
 
           <h1 className="reveal mt-6 font-display font-extrabold text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight">
-            AI-powered software,<br />
-            built for the <span className="text-red-accent">real world</span>
+            Build Software That<br />
+            Thinks <span className="text-red-accent">Ahead</span>
           </h1>
 
           <p className="reveal mt-6 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
