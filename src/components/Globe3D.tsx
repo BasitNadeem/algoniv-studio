@@ -3,8 +3,6 @@ import * as THREE from "three";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
 import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry.js";
-import { Line2 } from "three/examples/jsm/lines/Line2.js";
-import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 
 export default function Globe3D() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -20,7 +18,8 @@ export default function Globe3D() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(0, 0, 8);
+    camera.position.set(4.5, 3.5, 7);
+    camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -34,16 +33,18 @@ export default function Globe3D() {
     const group = new THREE.Group();
     scene.add(group);
 
+    const matsToResize: LineMaterial[] = [];
+
     const makeThickEdges = (
       geo: THREE.BufferGeometry,
       linewidth: number,
-      opacity = 0.95
+      opacity = 1
     ) => {
       const edges = new THREE.EdgesGeometry(geo);
       const lsg = new LineSegmentsGeometry().fromEdgesGeometry(edges);
       const mat = new LineMaterial({
         color: lineColor.getHex(),
-        linewidth, // in pixels
+        linewidth,
         transparent: true,
         opacity,
         depthTest: true,
@@ -54,71 +55,34 @@ export default function Globe3D() {
       return { seg, mat };
     };
 
-    const matsToResize: LineMaterial[] = [];
+    // Stack of 3 symmetric wireframe cubes, offset horizontally + vertically
+    const cubeGeo = new THREE.BoxGeometry(2, 2, 2);
+    const offsets: Array<[number, number, number, number, number]> = [
+      // x, y, z, linewidth, opacity
+      [-1.4, 1.4, -0.6, 4.5, 1],
+      [0, 0, 0, 5, 1],
+      [1.4, -1.4, 0.6, 4.5, 1],
+    ];
 
-    // --- Core: icosahedron (symmetric, premium) ---
-    const coreGeo = new THREE.IcosahedronGeometry(1.6, 0);
-    const coreFill = new THREE.Mesh(
-      coreGeo,
-      new THREE.MeshBasicMaterial({ color: innerColor })
-    );
-    group.add(coreFill);
-    const core = makeThickEdges(coreGeo, 4.5, 1);
-    group.add(core.seg);
-    matsToResize.push(core.mat);
+    offsets.forEach(([x, y, z, lw, op]) => {
+      const fill = new THREE.Mesh(
+        cubeGeo,
+        new THREE.MeshBasicMaterial({ color: innerColor })
+      );
+      fill.position.set(x, y, z);
+      group.add(fill);
 
-    // --- Outer dodecahedron shell (slightly larger, faded) ---
-    const shellGeo = new THREE.DodecahedronGeometry(2.4, 0);
-    const shell = makeThickEdges(shellGeo, 3, 0.45);
-    group.add(shell.seg);
-    matsToResize.push(shell.mat);
-
-    // --- Three orthogonal orbital rings ---
-    const ringGroup = new THREE.Group();
-    group.add(ringGroup);
-
-    const makeRing = (
-      radius: number,
-      rotX: number,
-      rotY: number,
-      rotZ: number,
-      lw: number,
-      opacity: number
-    ) => {
-      const segments = 128;
-      const positions: number[] = [];
-      for (let i = 0; i <= segments; i++) {
-        const a = (i / segments) * Math.PI * 2;
-        positions.push(Math.cos(a) * radius, Math.sin(a) * radius, 0);
-      }
-      const geo = new LineGeometry();
-      geo.setPositions(positions);
-      const mat = new LineMaterial({
-        color: lineColor.getHex(),
-        linewidth: lw,
-        transparent: true,
-        opacity,
-      });
-      mat.resolution.set(width, height);
-      const line = new Line2(geo, mat);
-      line.computeLineDistances();
-      line.rotation.set(rotX, rotY, rotZ);
-      ringGroup.add(line);
+      const { seg, mat } = makeThickEdges(cubeGeo, lw, op);
+      seg.position.set(x, y, z);
+      group.add(seg);
       matsToResize.push(mat);
-      return line;
-    };
-
-    makeRing(2.9, 0, 0, 0, 3, 0.7);
-    makeRing(2.9, Math.PI / 2, 0, 0, 3, 0.55);
-    makeRing(2.9, 0, Math.PI / 2, Math.PI / 4, 3, 0.4);
+    });
 
     let raf = 0;
     const clock = new THREE.Clock();
     const animate = () => {
       const dt = clock.getDelta();
-      group.rotation.y += (Math.PI * 2 / 50) * dt * speedRef.current;
-      group.rotation.x += (Math.PI * 2 / 120) * dt * speedRef.current;
-      ringGroup.rotation.z += (Math.PI * 2 / 80) * dt * speedRef.current;
+      group.rotation.y += (Math.PI * 2 / 30) * dt * speedRef.current;
       renderer.render(scene, camera);
       raf = requestAnimationFrame(animate);
     };
@@ -135,7 +99,7 @@ export default function Globe3D() {
     };
     window.addEventListener("resize", onResize);
 
-    const onEnter = () => { speedRef.current = 1.6; };
+    const onEnter = () => { speedRef.current = 1.8; };
     const onLeave = () => { speedRef.current = 1; };
     mount.addEventListener("mouseenter", onEnter);
     mount.addEventListener("mouseleave", onLeave);
