@@ -17,8 +17,8 @@ export default function Globe3D() {
     const height = mount.clientHeight;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(4.5, 3.5, 7);
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
+    camera.position.set(0, 0, 11);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -30,59 +30,98 @@ export default function Globe3D() {
     const lineColor = new THREE.Color("#E8192C");
     const innerColor = 0x0A0A0F;
 
-    const group = new THREE.Group();
-    scene.add(group);
+    const root = new THREE.Group();
+    scene.add(root);
 
     const matsToResize: LineMaterial[] = [];
 
-    const makeThickEdges = (
-      geo: THREE.BufferGeometry,
-      linewidth: number,
-      opacity = 1
+    // Build a slab: wireframe box + internal horizontal line "ribs" on the front face
+    const buildSlab = (
+      w: number,
+      h: number,
+      d: number,
+      ribCount: number,
+      edgeLW: number,
+      ribLW: number
     ) => {
-      const edges = new THREE.EdgesGeometry(geo);
-      const lsg = new LineSegmentsGeometry().fromEdgesGeometry(edges);
-      const mat = new LineMaterial({
-        color: lineColor.getHex(),
-        linewidth,
-        transparent: true,
-        opacity,
-        depthTest: true,
-      });
-      mat.resolution.set(width, height);
-      const seg = new LineSegments2(lsg, mat);
-      seg.computeLineDistances();
-      return { seg, mat };
-    };
+      const slab = new THREE.Group();
 
-    // Stack of 3 symmetric wireframe cubes, offset horizontally + vertically
-    const cubeGeo = new THREE.BoxGeometry(2, 2, 2);
-    const offsets: Array<[number, number, number, number, number]> = [
-      // x, y, z, linewidth, opacity
-      [-1.4, 1.4, -0.6, 4.5, 1],
-      [0, 0, 0, 5, 1],
-      [1.4, -1.4, 0.6, 4.5, 1],
-    ];
-
-    offsets.forEach(([x, y, z, lw, op]) => {
+      // solid inner fill to occlude back edges
       const fill = new THREE.Mesh(
-        cubeGeo,
+        new THREE.BoxGeometry(w, h, d),
         new THREE.MeshBasicMaterial({ color: innerColor })
       );
-      fill.position.set(x, y, z);
-      group.add(fill);
+      slab.add(fill);
 
-      const { seg, mat } = makeThickEdges(cubeGeo, lw, op);
-      seg.position.set(x, y, z);
-      group.add(seg);
-      matsToResize.push(mat);
+      // outline edges
+      const edges = new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d));
+      const lsg = new LineSegmentsGeometry().fromEdgesGeometry(edges);
+      const edgeMat = new LineMaterial({
+        color: lineColor.getHex(),
+        linewidth: edgeLW,
+        transparent: true,
+        opacity: 1,
+      });
+      edgeMat.resolution.set(width, height);
+      const edgeSeg = new LineSegments2(lsg, edgeMat);
+      edgeSeg.computeLineDistances();
+      slab.add(edgeSeg);
+      matsToResize.push(edgeMat);
+
+      // internal horizontal ribs (front + top faces) — gives the striped slab look
+      const ribPositions: number[] = [];
+      const halfW = w / 2;
+      const halfH = h / 2;
+      const halfD = d / 2;
+      // front face ribs (vary y)
+      for (let i = 1; i < ribCount; i++) {
+        const y = -halfH + (h * i) / ribCount;
+        ribPositions.push(-halfW, y, halfD, halfW, y, halfD);
+      }
+      // top face ribs (vary z)
+      for (let i = 1; i < ribCount; i++) {
+        const z = -halfD + (d * i) / ribCount;
+        ribPositions.push(-halfW, halfH, z, halfW, halfH, z);
+      }
+      const ribGeo = new LineSegmentsGeometry();
+      ribGeo.setPositions(ribPositions);
+      const ribMat = new LineMaterial({
+        color: lineColor.getHex(),
+        linewidth: ribLW,
+        transparent: true,
+        opacity: 0.55,
+      });
+      ribMat.resolution.set(width, height);
+      const ribSeg = new LineSegments2(ribGeo, ribMat);
+      ribSeg.computeLineDistances();
+      slab.add(ribSeg);
+      matsToResize.push(ribMat);
+
+      return slab;
+    };
+
+    // Three stacked slabs, offset horizontally + vertically with depth
+    const slabSpecs: Array<{ pos: [number, number, number] }> = [
+      { pos: [-1.6, 1.7, -0.6] },
+      { pos: [0, 0, 0] },
+      { pos: [1.6, -1.7, 0.6] },
+    ];
+
+    slabSpecs.forEach(({ pos }) => {
+      const s = buildSlab(4.2, 1.4, 1.4, 14, 3.5, 1.5);
+      s.position.set(...pos);
+      root.add(s);
     });
+
+    // Tilt the whole composition for that isometric / architectural feel
+    root.rotation.x = -0.35;
+    root.rotation.z = 0.15;
 
     let raf = 0;
     const clock = new THREE.Clock();
     const animate = () => {
       const dt = clock.getDelta();
-      group.rotation.y += (Math.PI * 2 / 30) * dt * speedRef.current;
+      root.rotation.y += (Math.PI * 2 / 40) * dt * speedRef.current;
       renderer.render(scene, camera);
       raf = requestAnimationFrame(animate);
     };
