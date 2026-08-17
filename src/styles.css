@@ -1,215 +1,641 @@
 @import "tailwindcss" source(none);
 @source "../src";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* ══════════════════════════════════════════════════════════
+   ALGONIV — design system
+   Signal Red #E80808 is the only chromatic colour on the site.
+   Everything else is a luminance step on warm near-black.
+   ══════════════════════════════════════════════════════════ */
 
 @theme inline {
+  --font-display: "Inter Tight", "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-border: var(--border);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-red-ui: var(--red-ui);
-  --color-red-accent: var(--red-accent);
-  --color-subtle: var(--subtle);
+  --color-ink: var(--ink);
+  --color-elev-1: var(--elev-1);
+  --color-elev-2: var(--elev-2);
+  --color-elev-3: var(--elev-3);
+  --color-paper: var(--paper);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-signal: var(--signal);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
 }
 
 :root {
-  --radius: 0.75rem;
+  --ink: #070707;
+  --elev-1: #0d0d0e;
+  --elev-2: #131314;
+  --elev-3: #1a1a1c;
 
-  /* Algoniv palette */
-  --background: #0A0A0F;
-  --surface: #111118;
-  --surface-2: #16161E;
-  --border: #1E1E2A;
-  --red-ui: #C8102E;
-  --red-accent: #E8192C;
-  --foreground: #F0F0F5;
-  --muted-foreground: #8888A0;
-  --subtle: #44445A;
+  --paper: #efedea;
+  --dim: #a09d98;
+  --faint: #6a6862;
 
-  --card: #111118;
-  --card-foreground: #F0F0F5;
-  --popover: #111118;
-  --popover-foreground: #F0F0F5;
-  --primary: #C8102E;
-  --primary-foreground: #F0F0F5;
-  --secondary: #16161E;
-  --secondary-foreground: #F0F0F5;
-  --muted: #16161E;
-  --accent: #16161E;
-  --accent-foreground: #F0F0F5;
-  --destructive: #C8102E;
-  --destructive-foreground: #F0F0F5;
-  --input: #1E1E2A;
-  --ring: #E8192C;
-}
+  --signal: #e80808;
 
-.dark {
-  --background: #0A0A0F;
-  --foreground: #F0F0F5;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-2: rgba(255, 255, 255, 0.14);
+
+  --shadow-lift:
+    0 2px 4px -2px rgba(0, 0, 0, 0.6), 0 12px 24px -12px rgba(0, 0, 0, 0.8),
+    0 40px 80px -40px rgba(0, 0, 0, 0.9);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
+  *,
+  *::before,
+  *::after {
+    border-color: var(--line);
   }
+
   html {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--ink);
+    color: var(--paper);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Nav links glide to their section; the offset clears the fixed header. */
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
   }
+
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--ink);
+    color: var(--paper);
     font-family: var(--font-sans);
     font-weight: 400;
+    overflow-x: hidden;
+    font-feature-settings: "ss01", "cv01";
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 600;
   }
+
   ::selection {
-    background-color: var(--red-accent);
-    color: white;
+    background-color: var(--signal);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #232325;
+    border-radius: 99px;
+    border: 3px solid var(--ink);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a3d;
   }
 }
 
+/* ── Type scale ─────────────────────────────────────────── */
 @layer utilities {
-  .font-display { font-family: var(--font-display); }
-  .font-mono { font-family: var(--font-mono); }
-
-  .text-red-ui { color: var(--red-ui); }
-  .text-red-accent { color: var(--red-accent); }
-  .bg-red-ui { background-color: var(--red-ui); }
-  .bg-red-accent { background-color: var(--red-accent); }
-  .border-red-ui { border-color: var(--red-ui); }
-  .border-red-accent { border-color: var(--red-accent); }
-
-  .bg-surface { background-color: var(--surface); }
-  .bg-surface-2 { background-color: var(--surface-2); }
-  .text-subtle { color: var(--subtle); }
-
-  .red-glow {
-    box-shadow: 0 0 28px rgba(200, 16, 46, 0.35);
+  .d1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(3.1rem, 9.4vw, 9.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
   }
-  .red-radial {
-    background: radial-gradient(circle at center, rgba(232, 25, 44, 0.18) 0%, transparent 60%);
+  .d2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6.2vw, 5.6rem);
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+  }
+  .d3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.75rem, 3.1vw, 2.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  .d4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.25rem, 1.7vw, 1.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  /* One expressive word per headline, in high-contrast italic serif. */
+  .accent {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.015em;
+  }
+
+  .micro {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .lede {
+    font-size: clamp(1rem, 1.25vw, 1.1875rem);
+    line-height: 1.62;
+    color: var(--dim);
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Innflo's own wordmark face, used only in its lockup. Its mark is the
+     untouched asset from the Innflo repo; the word is set in Fraunces per
+     their brand guide rather than redrawn. */
+  .innflo-word {
+    font-family: "Fraunces", Georgia, serif;
+    font-style: italic;
+    font-weight: 600;
+    letter-spacing: -0.015em;
   }
 }
 
-/* Marquee */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.marquee-track {
-  animation: marquee 40s linear infinite;
-}
-.marquee-track:hover { animation-play-state: paused; }
+/* ── Depth: surfaces, edges, light ──────────────────────── */
+@layer utilities {
+  /* Raised glass panel with a lit top edge and a real shadow. */
+  .panel {
+    position: relative;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.052) 0%,
+        rgba(255, 255, 255, 0.014) 40%,
+        rgba(255, 255, 255, 0.006) 100%
+      ),
+      var(--elev-1);
+    border: 1px solid var(--line);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      var(--shadow-lift);
+  }
 
-/* Pulse dot */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.3); }
-}
-.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+  .panel-flat {
+    background: var(--elev-1);
+    border: 1px solid var(--line);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
 
-/* Reveal */
-.reveal {
+  /* Gradient hairline that fades at both ends. */
+  .rule-x {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.14) 18%,
+      rgba(255, 255, 255, 0.14) 82%,
+      transparent
+    );
+  }
+  .rule-y {
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  }
+
+  .glow-signal {
+    box-shadow:
+      0 0 0 1px rgba(232, 8, 8, 0.28),
+      0 10px 44px -12px rgba(232, 8, 8, 0.55),
+      0 0 120px -30px rgba(232, 8, 8, 0.4);
+  }
+
+  .bleed-signal {
+    background: radial-gradient(
+      60% 60% at 50% 50%,
+      rgba(232, 8, 8, 0.22) 0%,
+      rgba(232, 8, 8, 0.07) 38%,
+      transparent 72%
+    );
+  }
+
+  .vignette {
+    background: radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(0, 0, 0, 0.75) 100%);
+  }
+
+  /* Film grain, fixed to the viewport so it never scrolls with content. */
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.42;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  }
+
+  .dotfield {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.11) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .mask-fade-b {
+    mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+  }
+  /* Fades in from the top — for bottom-anchored art like the signal trace. */
+  .mask-fade-t {
+    mask-image: linear-gradient(180deg, transparent 0%, #000 62%);
+  }
+}
+
+/* ── Entrance motion ───────────────────────────────────── */
+.rise {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  transform: translateY(28px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.reveal.in {
+.rise.in {
   opacity: 1;
+  transform: none;
+}
+
+.wipe {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wipe.in {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Per-word headline reveal. The padding/margin pair stops `overflow: hidden`
+   from shearing descenders off g, y and p at tight line-heights. */
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+.word > span {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.in .word > span,
+.word.in > span {
+  transform: none;
+}
+
+/* ── Named animations ──────────────────────────────────── */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee {
+  animation: marquee var(--marquee-duration, 48s) linear infinite;
+}
+.marquee-pause:hover .marquee {
+  animation-play-state: paused;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.4);
+  }
+}
+.breathe {
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.ring {
+  animation: ring 2.6s ease-out infinite;
+}
+
+/*
+  Entrance animations below are deliberately transform/colour only — never
+  opacity from 0. A paused or suppressed animation timeline sits on its first
+  keyframe forever, and an opacity-0 first frame would hide real content
+  (the product mock) rather than merely skipping its animation.
+*/
+@keyframes slide-in-row {
+  0% {
+    transform: translateY(-10px);
+    background-color: rgba(232, 8, 8, 0.16);
+  }
+  70% {
+    transform: none;
+    background-color: rgba(232, 8, 8, 0.06);
+  }
+  100% {
+    transform: none;
+    background-color: transparent;
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+@keyframes bar-rise {
+  0% {
+    transform: scaleY(0.15);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+@keyframes fill-line {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    transform: translateY(12px) scale(0.985);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes line-in {
+  0% {
+    transform: translateX(-14px);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* Specular sweep across the product frame */
+@keyframes sweep {
+  0% {
+    transform: translateX(-70%) skewX(-14deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(190%) skewX(-14deg);
+    opacity: 0;
+  }
+}
+
+/* A short bright dash running the length of a connector path. */
+@keyframes packet {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -260;
+    opacity: 0;
+  }
+}
+
+@keyframes travel {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+/* Swapping word in the hero headline. The padding/margin pair keeps italic
+   descenders from being sheared off by the clipping mask. */
+.swap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
+  transition: width 0.62s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes word-up {
+  from {
+    transform: translateY(108%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Slow signal sweep across the in-house panel — a sign of life, not a readout. */
+@keyframes scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-110%);
+  }
+  100% {
+    transform: translateY(300%);
+  }
+}
+
+/* ── Interactive ───────────────────────────────────────── */
+.btn {
+  position: relative;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease,
+    color 0.3s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
   transform: translateY(0);
 }
 
-/* Section label slide */
-.label-slide {
-  opacity: 0;
-  transform: translateX(-16px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+/* Flat Signal Red — no inset highlight, no bloom. It should read as the
+   logo colour on a button, not as a glossy pill. */
+.btn-signal {
+  background-color: var(--signal);
+  color: #fff;
 }
-.label-slide.in {
-  opacity: 1;
-  transform: translateX(0);
+.btn-signal:hover {
+  background-color: #c50707;
 }
-
-/* Capability card — rounded with red glow on hover */
-.capability-card {
-  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease, background-color 0.35s ease;
-}
-.capability-card:hover {
-  border-color: var(--red-accent);
-  background-color: #13131C;
-  box-shadow:
-    0 0 0 1px rgba(232, 25, 44, 0.35),
-    0 0 40px -4px rgba(232, 25, 44, 0.45),
-    0 0 90px -10px rgba(232, 25, 44, 0.35);
-  transform: translateY(-2px);
+.btn-signal:active {
+  background-color: #ad0606;
 }
 
-/* Process step — circular node with red glow on hover */
-.process-step:hover .process-node {
-  border-color: var(--red-accent);
-  box-shadow:
-    0 0 0 1px rgba(232, 25, 44, 0.4),
-    0 0 30px rgba(232, 25, 44, 0.55),
-    inset 0 0 20px rgba(232, 25, 44, 0.15);
-  transform: translateY(-1px);
+.btn-line {
+  border: 1px solid var(--line-2);
+  color: var(--paper);
+  background: rgba(255, 255, 255, 0.02);
 }
-.process-step .process-node {
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+.btn-line:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* CTA hover */
-.cta-red {
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-}
-.cta-red:hover {
-  box-shadow: 0 0 28px rgba(200, 16, 46, 0.35);
-  transform: translateY(-2px);
-}
-
-/* Nav underline */
-.nav-link {
+/* Link with a signal underline that draws in */
+.ul {
   position: relative;
 }
-.nav-link::after {
+.ul::after {
   content: "";
   position: absolute;
-  left: 0; bottom: -4px;
-  width: 0; height: 1px;
-  background-color: var(--red-accent);
-  transition: width 0.3s ease;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 0;
+  background: var(--signal);
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.nav-link:hover::after { width: 100%; }
+.ul:hover::after {
+  width: 100%;
+}
+
+/* Card that lights from the pointer position (--mx/--my set in JS) */
+.spot {
+  position: relative;
+  isolation: isolate;
+  transition:
+    border-color 0.5s ease,
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(232, 8, 8, 0.16),
+    transparent 70%
+  );
+}
+.spot:hover::before {
+  opacity: 1;
+}
+.spot:hover {
+  border-color: rgba(232, 8, 8, 0.4);
+}
+
+/* ── Pointer spotlight + dot ───────────────────────────── */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  height: 7px;
+  width: 7px;
+  border-radius: 99px;
+  background: var(--signal);
+  pointer-events: none;
+  mix-blend-mode: normal;
+  transition:
+    width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease,
+    background-color 0.3s ease;
+}
+.cursor-dot[data-hot="true"] {
+  height: 44px;
+  width: 44px;
+  background: rgba(232, 8, 8, 0.16);
+  border: 1px solid rgba(232, 8, 8, 0.6);
+}
+
+/* ── Reduced motion ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .wipe,
+  .word > span {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+  .marquee,
+  .breathe,
+  .ring {
+    animation: none !important;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}

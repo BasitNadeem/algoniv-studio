@@ -1,0 +1,31 @@
+{
+  "name": "Algoniv",
+  "logoTypeface": "Quicksand Medium",
+  "colors": {
+    "signalRed": "#E80808",
+    "black": "#000000",
+    "white": "#FFFFFF",
+    "charcoal": "#151515",
+    "softGray": "#F4F5F7",
+    "slate": "#475467"
+  },
+  "minimumSize": {
+    "fullLogoDigitalPx": 140,
+    "insightIconPx": 24
+  },
+  "clearSpace": {
+    "unit": "x",
+    "definition": "x equals the width of the center insight bar"
+  },
+  "geometry": {
+    "diagonalKnockoutAngleDegrees": 11.1,
+    "diagonalSourcePath": "M57.277344 233.109375 L205.675781 205.8125 L204.949219 202.132812 Z",
+    "slashRule": "The knockout is a tapered triangle: near-zero width at a, increasing continuously through l and g, and reaching full width at o.",
+    "lowercaseIDot": "Removed by an outer 7.052 x 7.552 pt knockout; the insight centre bar supplies the smaller circular aperture.",
+    "outerIDotKnockoutPt": [7.052, 7.552],
+    "centerBarApertureCenterPt": [246.277344, 191.1875],
+    "centerBarAperturePt": [5.15625, 5.523438],
+    "sourceCanvasPt": [375, 375],
+    "source": "Canva PDF vector master"
+  }
+}
