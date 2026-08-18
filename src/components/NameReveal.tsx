@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useScrollProgress } from "@/lib/motion";
+import FlowField from "./FlowField";
 
 const LETTERS = "algoniv".split("");
 const KEEP = new Set([0, 5]); // the a and the i
@@ -83,6 +84,11 @@ export default function NameReveal() {
   return (
     <div ref={trackRef} className="relative" style={{ height: "260vh" }}>
       <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-hidden">
+        {/* Turbulence finding coherence, on the same scroll as the word. */}
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <FlowField progress={progress} />
+        </div>
+
         <div
           className="pointer-events-none absolute h-[620px] w-[900px] bleed-signal transition-opacity duration-700"
           style={{ opacity: 0.25 + converge * 0.55 }}
