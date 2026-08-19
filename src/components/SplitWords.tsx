@@ -26,19 +26,27 @@ export default function SplitWords({
     <span ref={ref} className={`${inView ? "in" : ""} ${className}`}>
       {segments.map((segment, si) => (
         <span key={si} className={segment.accent ? "accent text-signal" : undefined}>
-          {segment.text.split(" ").map((word) => {
-            wordIndex += 1;
-            if (word === "\n") return <br key={`br-${wordIndex}`} />;
-            const key = `${word}-${wordIndex}`;
-            const delayMs = delay + wordIndex * stagger;
-            return (
-              <span key={key}>
-                <span className="word">
-                  <span style={{ transitionDelay: `${delayMs}ms` }}>{word}</span>
-                </span>{" "}
-              </span>
-            );
-          })}
+          {/* Drop empty strings: segments are written with a leading space
+              (" One standard.") so they read naturally in source, and every
+              word already emits its own trailing space below. Without this,
+              the leading space splits into an empty word that renders a second
+              space — and an empty .word box that notches text selection. */}
+          {segment.text
+            .split(" ")
+            .filter(Boolean)
+            .map((word) => {
+              wordIndex += 1;
+              if (word === "\n") return <br key={`br-${wordIndex}`} />;
+              const key = `${word}-${wordIndex}`;
+              const delayMs = delay + wordIndex * stagger;
+              return (
+                <span key={key}>
+                  <span className="word">
+                    <span style={{ transitionDelay: `${delayMs}ms` }}>{word}</span>
+                  </span>{" "}
+                </span>
+              );
+            })}
         </span>
       ))}
     </span>

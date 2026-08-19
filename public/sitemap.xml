@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  One entry per real URL. The homepage sections (#work, #in-house, #method,
+  #studio, #contact) are anchors on this page, not separate documents, and
+  crawlers ignore fragments, so they are deliberately not listed.
+  Add a <url> block here when a genuine route is added.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://algoniv.com/</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

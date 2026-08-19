@@ -1,0 +1,5 @@
+# https://algoniv.com
+User-agent: *
+Allow: /
+
+Sitemap: https://algoniv.com/sitemap.xml

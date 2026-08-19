@@ -63,7 +63,9 @@ export default function Hero() {
           <div className="py-10 md:py-14">
             <h1 className="d1">
               <span className="block">
-                <SplitWords segments={[{ text: "We put" }]} delay={120} />{" "}
+                {/* No {" "} needed here: SplitWords already emits a trailing
+                    space after every word, including the last one. */}
+                <SplitWords segments={[{ text: "We put" }]} delay={120} />
                 <RotatingWord words={WORDS} />
               </span>
               <span className="mt-1 block md:mt-2">

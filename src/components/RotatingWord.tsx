@@ -51,11 +51,17 @@ export default function RotatingWord({
 
   return (
     <span className="relative inline-block align-baseline">
-      {/* Hidden sizer: same type, measured once, never painted. */}
+      {/* Hidden sizer: same type, measured once, never painted. `invisible`
+          keeps its text out of anything copied, but visibility alone does NOT
+          keep its boxes out of selection *geometry*. It sat directly over the
+          headline, so its five word boxes punched notches into the selection
+          highlight. select-none takes it out of user selections and the offset
+          parks any residual geometry off-screen. Width is unaffected: the row
+          is nowrap, so position cannot change what it measures. */}
       <span
         ref={sizerRef}
         aria-hidden
-        className="pointer-events-none invisible absolute top-0 left-0 whitespace-nowrap"
+        className="pointer-events-none invisible absolute top-0 -left-[9999px] select-none whitespace-nowrap"
       >
         {words.map((w) => (
           <span key={w} className="accent inline-block">

@@ -290,8 +290,17 @@
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  padding-bottom: 0.16em;
-  margin-bottom: -0.16em;
+  /* Bottom: clearance for descenders inside the clipping mask. Kept equal to
+     .swap so both sit in identically sized boxes and selection stays one
+     straight edge across the line.
+     Right: display tracking is negative, so the trailing letter-space is
+     subtracted from the last glyph's advance and its ink overhangs the box.
+     The padding grows the box to cover that ink; the negative margin cancels
+     it again so layout and word spacing are untouched. */
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
+  padding-right: 0.06em;
+  margin-right: -0.06em;
 }
 .word > span {
   display: inline-block;

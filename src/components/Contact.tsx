@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { SITE } from "@/lib/site";
 import SplitWords from "./SplitWords";
 
-const CONTACT_EMAIL = "basit.nadeem5@gmail.com";
+const CONTACT_EMAIL = SITE.email;
 
 /**
  * Set VITE_WEB3FORMS_KEY in Vercel (and .env.local for dev). Without it the
@@ -40,13 +41,18 @@ export default function Contact() {
         method: "POST",
         body: new FormData(form),
       });
-      if (res.ok) {
+      // Web3Forms answers 200 with {success:false} for a bad key, so the HTTP
+      // status alone is not enough to call it delivered.
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.success) {
         setStatus("sent");
         form.reset();
       } else {
+        console.error("Contact form rejected:", data?.message ?? res.status);
         setStatus("error");
       }
-    } catch {
+    } catch (err) {
+      console.error("Contact form failed to reach Web3Forms:", err);
       setStatus("error");
     }
   }
@@ -114,10 +120,20 @@ export default function Contact() {
               {WEB3FORMS_KEY && (
                 <>
                   <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
-                  <input type="hidden" name="subject" value="New Algoniv enquiry" />
-                  <input type="hidden" name="from_name" value="algoniv.com" />
+                  <input type="hidden" name="subject" value={`New enquiry — ${kind}`} />
+                  <input type="hidden" name="from_name" value={SITE.domain} />
+                  {/* Web3Forms reads "@" as: set Reply-To from the email field,
+                      so hitting reply in the inbox answers the sender. */}
+                  <input type="hidden" name="replyto" value="@" />
                   <input type="hidden" name="project_type" value={kind} />
-                  <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} />
+                  {/* Honeypot: bots fill it, humans never see it. */}
+                  <input
+                    type="checkbox"
+                    name="botcheck"
+                    className="hidden"
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
                 </>
               )}
 

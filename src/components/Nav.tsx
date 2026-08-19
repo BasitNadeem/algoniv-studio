@@ -147,8 +147,16 @@ export default function Nav() {
         </div>
       </header>
 
-      {/* Mobile sheet */}
+      {/* Mobile sheet.
+          `inert` while closed is load-bearing: the sheet stays display:flex at
+          full viewport size and only fades to opacity 0, so without it the five
+          links below remain in the tab order and in the accessibility tree — a
+          keyboard or screen-reader user on a phone tabs through an invisible
+          menu before reaching the page. inert also blocks text selection inside
+          it, which keeps it out of a select-all. */}
       <div
+        inert={!open}
+        aria-hidden={!open}
         className="fixed inset-0 z-40 flex flex-col justify-end bg-ink/95 backdrop-blur-2xl transition-all duration-500 md:hidden"
         style={{
           opacity: open ? 1 : 0,

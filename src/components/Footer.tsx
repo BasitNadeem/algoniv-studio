@@ -1,3 +1,5 @@
+import { SITE } from "@/lib/site";
+
 /** Fill these in when the accounts exist — empty renders nothing, not dead links. */
 const socials: { label: string; href: string }[] = [];
 
@@ -12,13 +14,13 @@ const columns = [
   },
   {
     heading: "In-house",
-    links: [{ label: "Innflo", href: "https://innflo.co", external: true }],
+    links: [{ label: SITE.product.name, href: SITE.product.url, external: true }],
   },
   {
     heading: "Contact",
     links: [
       { label: "Start a project", href: "#contact" },
-      { label: "basit.nadeem5@gmail.com", href: "mailto:basit.nadeem5@gmail.com" },
+      { label: SITE.email, href: `mailto:${SITE.email}` },
     ],
   },
 ];
